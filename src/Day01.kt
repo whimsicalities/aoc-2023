@@ -13,10 +13,7 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        class WordAndNumber(word: String, number: Int) {
-            val word = word
-            val number = number
-        }
+        class WordAndNumber(val word: String, val number: Int)
 
         val wordsAndNumbers = listOf(
                 WordAndNumber("one", 1),
