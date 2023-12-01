@@ -13,25 +13,30 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        val wordsToNumbers = mapOf(
-                "one" to 1,
-                "1" to 1,
-                "two" to 2,
-                "2" to 2,
-                "three" to 3,
-                "3" to 3,
-                "four" to 4,
-                "4" to 4,
-                "five" to 5,
-                "5" to 5,
-                "six" to 6,
-                "6" to 6,
-                "seven" to 7,
-                "7" to 7,
-                "eight" to 8,
-                "8" to 8,
-                "nine" to 9,
-                "9" to 9,
+        class WordAndNumber(word: String, number: Int) {
+            val word = word
+            val number = number
+        }
+
+        val wordsAndNumbers = listOf(
+                WordAndNumber("one", 1),
+                WordAndNumber("1", 1),
+                WordAndNumber("two", 2),
+                WordAndNumber("2", 2),
+                WordAndNumber("three", 3),
+                WordAndNumber("3", 3),
+                WordAndNumber("four", 4),
+                WordAndNumber("4", 4),
+                WordAndNumber("five", 5),
+                WordAndNumber("5", 5),
+                WordAndNumber("six", 6),
+                WordAndNumber("6", 6),
+                WordAndNumber("seven", 7),
+                WordAndNumber("7", 7),
+                WordAndNumber("eight", 8),
+                WordAndNumber("8", 8),
+                WordAndNumber("nine", 9),
+                WordAndNumber("9", 9)
         )
         var total = 0
         for (line in input) {
@@ -39,18 +44,18 @@ fun main() {
             var firstNumberIndex = Int.MAX_VALUE
             var lastNumber = 0
             var lastNumberIndex = -1
-            for (possibleNumbers in wordsToNumbers.entries) {
+            for (wordAndNumber in wordsAndNumbers) {
                 var currentIndex = -1
                 do {
-                    currentIndex = line.indexOf(possibleNumbers.key, currentIndex+1)
+                    currentIndex = line.indexOf(wordAndNumber.word, currentIndex+1)
                     if (currentIndex != -1) {
-                        if (currentIndex<firstNumberIndex) {
+                        if (currentIndex < firstNumberIndex) {
                             firstNumberIndex = currentIndex
-                            firstNumber = possibleNumbers.value
+                            firstNumber = wordAndNumber.number
                         }
-                        if (currentIndex>lastNumberIndex) {
+                        if (currentIndex > lastNumberIndex) {
                             lastNumberIndex = currentIndex
-                            lastNumber = possibleNumbers.value
+                            lastNumber = wordAndNumber.number
                         }
                     }
                 } while (currentIndex != -1)
