@@ -77,10 +77,8 @@ fun main() {
                     shiftedCharacterIndex)) {
                 val adjacentCharacter = input[shiftedLineNumber][shiftedCharacterIndex]
                 if (adjacentCharacter.isDigit()){
-                    // Figure out which digit
                     val startIndex = findStartIndexOfNumber(input[shiftedLineNumber], shiftedCharacterIndex)
                     val (fullNumber, _) = getFullNumberAndFinalIndex(input[shiftedLineNumber], startIndex)
-                    // Add it to the adjacent numbers found list
                     adjacentNumbersFound.add(fullNumber)
                 }
             }
@@ -88,9 +86,9 @@ fun main() {
     }
 
     fun checkAboveAndBelow(adjacentNumbersFound: ArrayList<Int>, input: List<String>, lineNumber: Int, currentCharacterIndex: Int) {
-        for (lineShift in -1..1 step 2) {
+        for (lineShift in -1..1 step 2) { // lines above (1) and below (-1)
             var index = -1
-            // Move along lines
+            // Move along the line above and below
             while (index<=1) {
                 val shiftedLineNumber = lineNumber + lineShift
                 val shiftedCharacterIndex = currentCharacterIndex + index
@@ -99,12 +97,11 @@ fun main() {
                         shiftedCharacterIndex)) {
                     val adjacentCharacter = input[shiftedLineNumber][shiftedCharacterIndex]
                     if (adjacentCharacter.isDigit()){
-                        // Figure out which digit
                         val startIndex = findStartIndexOfNumber(input[shiftedLineNumber], shiftedCharacterIndex)
                         val (fullNumber, finalIndex) = getFullNumberAndFinalIndex(input[shiftedLineNumber], startIndex)
-                        // Add it to the adjacent numbers found list
                         adjacentNumbersFound.add(fullNumber)
-                        index += (finalIndex - shiftedCharacterIndex) + 1 // Move along index so that the same number doesn't get counted again
+                        // Move to after end of the number so that the same number doesn't get counted again
+                        index += (finalIndex - shiftedCharacterIndex) + 1
                         continue
                     }
                 }
