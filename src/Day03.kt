@@ -67,6 +67,52 @@ fun main() {
         return currentIndex+1
     }
 
+    fun checkEitherSide(adjacentNumbersFound: ArrayList<Int>, input: List<String>, lineNumber: Int, currentCharacterIndex: Int) {
+        val relativeIndicesToCheckSides = arrayOf(Pair(0, -1), Pair(0, 1))
+        for (relativeIndicesPair in relativeIndicesToCheckSides) {
+            val shiftedLineNumber = lineNumber + relativeIndicesPair.first
+            val shiftedCharacterIndex = currentCharacterIndex + relativeIndicesPair.second
+            if (isWithinBounds(input,
+                    shiftedLineNumber,
+                    shiftedCharacterIndex)) {
+                val adjacentCharacter = input[shiftedLineNumber][shiftedCharacterIndex]
+                if (adjacentCharacter.isDigit()){
+                    // Figure out which digit
+                    val startIndex = findStartIndexOfNumber(input[shiftedLineNumber], shiftedCharacterIndex)
+                    val (fullNumber, _) = getFullNumberAndFinalIndex(input[shiftedLineNumber], startIndex)
+                    // Add it to the adjacent numbers found list
+                    adjacentNumbersFound.add(fullNumber)
+                }
+            }
+        }
+    }
+
+    fun checkAboveAndBelow(adjacentNumbersFound: ArrayList<Int>, input: List<String>, lineNumber: Int, currentCharacterIndex: Int) {
+        for (lineShift in -1..1 step 2) {
+            var index = -1
+            // Move along lines
+            while (index<=1) {
+                val shiftedLineNumber = lineNumber + lineShift
+                val shiftedCharacterIndex = currentCharacterIndex + index
+                if (isWithinBounds(input,
+                        shiftedLineNumber,
+                        shiftedCharacterIndex)) {
+                    val adjacentCharacter = input[shiftedLineNumber][shiftedCharacterIndex]
+                    if (adjacentCharacter.isDigit()){
+                        // Figure out which digit
+                        val startIndex = findStartIndexOfNumber(input[shiftedLineNumber], shiftedCharacterIndex)
+                        val (fullNumber, finalIndex) = getFullNumberAndFinalIndex(input[shiftedLineNumber], startIndex)
+                        // Add it to the adjacent numbers found list
+                        adjacentNumbersFound.add(fullNumber)
+                        index += (finalIndex - shiftedCharacterIndex) + 1 // Move along index so that the same number doesn't get counted again
+                        continue
+                    }
+                }
+                index++
+            }
+        }
+    }
+
     fun part2(input: List<String>): Int {
         var partNumbersSum = 0
         for (lineNumber in input.indices) {
@@ -74,50 +120,9 @@ fun main() {
             for (currentCharacterIndex in line.indices) {
                 val character = line[currentCharacterIndex]
                 if (character == '*') {
-                    // check either side
-                    val relativeIndicesToCheckSides = arrayOf(Pair(0, -1), Pair(0, 1))
                     val adjacentNumbersFound = arrayListOf<Int>()
-                    for (relativeIndicesPair in relativeIndicesToCheckSides) {
-                        val shiftedLineNumber = lineNumber + relativeIndicesPair.first
-                        val shiftedCharacterIndex = currentCharacterIndex + relativeIndicesPair.second
-                        if (isWithinBounds(input,
-                                shiftedLineNumber,
-                                shiftedCharacterIndex)) {
-                            val adjacentCharacter = input[shiftedLineNumber][shiftedCharacterIndex]
-                            if (adjacentCharacter.isDigit()){
-                                // Figure out which digit
-                                val startIndex = findStartIndexOfNumber(input[shiftedLineNumber], shiftedCharacterIndex)
-                                val (fullNumber, _) = getFullNumberAndFinalIndex(input[shiftedLineNumber], startIndex)
-                                // Add it to the adjacent numbers found list
-                                adjacentNumbersFound.add(fullNumber)
-                            }
-                        }
-                    }
-                    // check above and below
-                    for (lineShift in -1..1 step 2) {
-                        var index = -1
-                        // Move along lines
-                        while (index<=1) {
-                            val shiftedLineNumber = lineNumber + lineShift
-                            val shiftedCharacterIndex = currentCharacterIndex + index
-                            if (isWithinBounds(input,
-                                    shiftedLineNumber,
-                                    shiftedCharacterIndex)) {
-                                val adjacentCharacter = input[shiftedLineNumber][shiftedCharacterIndex]
-                                if (adjacentCharacter.isDigit()){
-                                    // Figure out which digit
-                                    val startIndex = findStartIndexOfNumber(input[shiftedLineNumber], shiftedCharacterIndex)
-                                    val (fullNumber, finalIndex) = getFullNumberAndFinalIndex(input[shiftedLineNumber], startIndex)
-                                    // Add it to the adjacent numbers found list
-                                    adjacentNumbersFound.add(fullNumber)
-                                    index += (finalIndex - shiftedCharacterIndex) + 1 // Move along index so that the same number doesn't get counted again
-                                    continue
-                                }
-                            }
-                            index++
-                        }
-                    }
-
+                    checkEitherSide(adjacentNumbersFound, input, lineNumber, currentCharacterIndex)
+                    checkAboveAndBelow(adjacentNumbersFound, input, lineNumber, currentCharacterIndex)
                     if (adjacentNumbersFound.size == 2){
                         partNumbersSum += adjacentNumbersFound[0] * adjacentNumbersFound[1]
                     }
